@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Responsible AI Readiness Assessment</title>
+  <meta name="description" content="Interactive Responsible AI readiness assessment covering data governance, risk, controls, human oversight and monitoring.">
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #111827;
+      --panel2: #172033;
+      --text: #e5e7eb;
+      --muted: #a7b0c0;
+      --line: #2a3548;
+      --accent: #7dd3fc;
+      --good: #86efac;
+      --warn: #fde68a;
+      --bad: #fca5a5;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, #09111f 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 40px 20px 64px; }
+    .hero { margin-bottom: 28px; }
+    .eyebrow { color: var(--accent); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; font-size: .78rem; }
+    h1 { font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.05; margin: 8px 0 12px; }
+    .lead { color: var(--muted); max-width: 760px; font-size: 1.08rem; }
+    .model {
+      margin: 18px 0 0;
+      padding: 14px 16px;
+      background: #0e1729;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-weight: 700;
+      color: #d8f3ff;
+    }
+    .card {
+      background: rgba(17,24,39,.94);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px;
+      margin: 18px 0;
+    }
+    .question {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .question:last-child { border-bottom: 0; }
+    .question h3 { margin: 0 0 6px; font-size: 1rem; }
+    .question p { margin: 0 0 10px; color: var(--muted); font-size: .93rem; }
+    .choices { display: flex; gap: 10px; flex-wrap: wrap; }
+    label.choice {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 11px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      cursor: pointer;
+      background: var(--panel2);
+    }
+    input[type="radio"] { accent-color: #38bdf8; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+    button, .linkbtn {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    button.primary { background: #e5e7eb; color: #0b1220; }
+    button.secondary, .linkbtn { background: #1f2937; color: var(--text); border: 1px solid var(--line); }
+    #result { display: none; }
+    .result-title { font-size: 1.6rem; margin: 0 0 6px; }
+    .score { color: var(--muted); margin-bottom: 14px; }
+    .status-ready { color: var(--good); }
+    .status-controls { color: var(--warn); }
+    .status-further { color: var(--bad); }
+    .recommendations li { margin-bottom: 6px; }
+    footer { margin-top: 28px; color: var(--muted); font-size: .9rem; }
+    footer a { color: var(--accent); }
+    .small { font-size: .85rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Responsible AI · Interactive Reference</div>
+      <h1>AI Readiness Assessment</h1>
+      <p class="lead">
+        A lightweight self-assessment for organisations considering operational AI use.
+        It focuses on the foundations that make responsible adoption practical: governed data,
+        clear ownership, proportionate risk controls, human oversight and monitoring.
+      </p>
+      <div class="model">Data Governance → Trusted Data → AI Readiness → Responsible AI → Measurement → Scale</div>
+    </section>
+
+    <section class="card">
+      <h2>Assessment</h2>
+      <p class="small">Choose the answer that best reflects the current state. This is a practical reference tool, not a compliance certification.</p>
+
+      <form id="assessment">
+        <div id="questions"></div>
+        <div class="actions">
+          <button class="primary" type="submit">Calculate readiness</button>
+          <button class="secondary" type="button" id="resetBtn">Reset</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card" id="result">
+      <div class="eyebrow">Result</div>
+      <h2 class="result-title" id="resultTitle"></h2>
+      <div class="score" id="resultScore"></div>
+      <p id="resultText"></p>
+      <h3>Recommended next steps</h3>
+      <ul class="recommendations" id="recommendations"></ul>
+    </section>
+
+    <section class="card">
+      <h2>How the scoring works</h2>
+      <p>
+        Each question is scored as <strong>Yes = 2</strong>, <strong>Partly = 1</strong>,
+        <strong>No = 0</strong>. The result is intentionally simple:
+      </p>
+      <ul>
+        <li><strong>Ready</strong> — foundations are broadly in place; continue with proportionate controls and monitoring.</li>
+        <li><strong>Ready with Controls</strong> — adoption can proceed selectively, but several foundations need strengthening.</li>
+        <li><strong>Further Assessment Required</strong> — material gaps should be addressed before scaling higher-impact AI use.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <p>
+        Created by <strong>Rakesh Randeria</strong> ·
+        <a href="https://rakeshranderia.com.au" target="_blank" rel="noopener">Website</a> ·
+        <a href="https://github.com/rakeshranderia/responsible-ai-readiness" target="_blank" rel="noopener">Source on GitHub</a>
+      </p>
+      <p class="small">
+        This independent reference tool is for general governance and readiness discussion only.
+        Organisations should apply their own legal, regulatory, privacy, security, procurement and risk requirements.
+      </p>
+    </footer>
+  </main>
+
+  <script>
+    const questions = [
+      ["dataOwner", "Data ownership", "Is there a clearly accountable owner for the data used by the AI use case?"],
+      ["classification", "Data classification", "Is the information classified and is its use permitted in the proposed AI platform?"],
+      ["quality", "Data quality", "Is the data sufficiently accurate, complete, timely and fit for the intended purpose?"],
+      ["access", "Access control", "Are permissions limited to the people, systems and services that genuinely need access?"],
+      ["lineage", "Data lineage", "Can you reasonably explain the main source, movement and downstream use of the data?"],
+      ["purpose", "Purpose and value", "Is the business problem clear and is there a measurable reason to use AI?"],
+      ["risk", "Risk assessment", "Has the use case been assessed for privacy, security, legal, ethical and operational impact?"],
+      ["platform", "Approved platform", "Is the AI platform approved and are supplier, data handling and retention arrangements understood?"],
+      ["human", "Human oversight", "Is meaningful human review defined for consequential or material outputs?"],
+      ["testing", "Testing and evaluation", "Have quality, failure modes, hallucination/bias risk and acceptance criteria been considered?"],
+      ["monitoring", "Monitoring", "Are owners, metrics, incident paths and review triggers defined for ongoing use?"],
+      ["shadow", "Shadow AI controls", "Are users given clear guidance on approved tools, prohibited data and escalation paths?"]
+    ];
+
+    const container = document.getElementById("questions");
+
+    questions.forEach(([id, title, text], index) => {
+      const block = document.createElement("div");
+      block.className = "question";
+      block.innerHTML = `
+        <h3>${index + 1}. ${title}</h3>
+        <p>${text}</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="${id}" value="2" required> Yes</label>
+          <label class="choice"><input type="radio" name="${id}" value="1"> Partly</label>
+          <label class="choice"><input type="radio" name="${id}" value="0"> No</label>
+        </div>`;
+      container.appendChild(block);
+    });
+
+    document.getElementById("assessment").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const data = new FormData(e.target);
+      let score = 0;
+      const gaps = [];
+
+      questions.forEach(([id, title]) => {
+        const value = Number(data.get(id));
+        score += value;
+        if (value < 2) gaps.push(title);
+      });
+
+      const max = questions.length * 2;
+      const pct = Math.round((score / max) * 100);
+
+      let title, cls, text;
+      if (pct >= 80) {
+        title = "Ready";
+        cls = "status-ready";
+        text = "The main governance and control foundations appear to be in place. Progress can focus on proportionate use-case controls, evidence, monitoring and continuous improvement.";
+      } else if (pct >= 55) {
+        title = "Ready with Controls";
+        cls = "status-controls";
+        text = "There is enough foundation to proceed selectively, but some controls should be strengthened before broader or higher-impact adoption.";
+      } else {
+        title = "Further Assessment Required";
+        cls = "status-further";
+        text = "Material gaps remain in the governance or control foundation. Address the highest-risk gaps before scaling operational AI use.";
+      }
+
+      const resultTitle = document.getElementById("resultTitle");
+      resultTitle.textContent = title;
+      resultTitle.className = "result-title " + cls;
+      document.getElementById("resultScore").textContent = `Readiness score: ${score}/${max} (${pct}%)`;
+      document.getElementById("resultText").textContent = text;
+
+      const recs = document.getElementById("recommendations");
+      recs.innerHTML = "";
+      const items = gaps.length
+        ? gaps.slice(0, 6).map(g => `Strengthen or clarify: ${g}.`)
+        : ["Maintain current controls and periodically reassess as the use case, platform, data or risk changes."];
+
+      items.push("Apply stronger assessment and oversight as business impact increases.");
+      items.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        recs.appendChild(li);
+      });
+
+      document.getElementById("result").style.display = "block";
+      document.getElementById("result").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      document.getElementById("assessment").reset();
+      document.getElementById("result").style.display = "none";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  </script>
+</body>
+</html>
