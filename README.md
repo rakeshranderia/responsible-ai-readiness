@@ -6,7 +6,7 @@ colorTo: indigo
 sdk: static
 pinned: false
 license: mit
-short_description: Interactive Responsible AI readiness assessment covering data governance, risk, controls and human oversight.
+short_description: Interactive Responsible AI readiness assessment
 ---
 
 # Responsible AI Readiness
@@ -20,6 +20,7 @@ A lightweight interactive self-assessment for organisations considering operatio
 ## What it assesses
 
 The tool covers:
+
 - data ownership;
 - classification;
 - data quality;
@@ -29,7 +30,7 @@ The tool covers:
 - risk assessment;
 - approved platforms;
 - human oversight;
-- testing/evaluation;
+- testing and evaluation;
 - monitoring;
 - Shadow AI controls.
 
@@ -51,8 +52,10 @@ https://huggingface.co/spaces/rakeshranderia/responsible-ai-readiness
 
 - Data Governance + Responsible AI Framework  
   https://github.com/rakeshranderia/data-governance-framework
+
 - Governed AI Adoption Framework  
   https://github.com/rakeshranderia/governed-ai-adoption
+
 - AI Governance Framework  
   https://github.com/rakeshranderia/ai-governance-framework
 
