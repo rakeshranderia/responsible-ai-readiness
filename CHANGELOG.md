@@ -1,11 +1,20 @@
 # Changelog
 
-## v1.0 — September 2026
+## v1.1 — Readiness dimensions
 
-Initial public release.
+- Added four readiness dimensions:
+  - Data Foundations
+  - Risk & Controls
+  - Human Oversight
+  - Monitoring & Operations
+- Added per-dimension percentage scoring to the results view.
+- Recommended next steps now prioritise the weakest readiness dimensions.
+- Retained the original 12-question overall readiness model and thresholds.
+- No backend, API, tracking or user-data storage added.
 
-- static interactive Responsible AI readiness assessment;
-- 12 governance/readiness questions;
-- three readiness outcomes;
-- practical next-step recommendations;
-- no backend, API keys, model calls or user-data storage.
+## v1.0 — Initial release
+
+- Added 12-question Responsible AI readiness assessment.
+- Added three readiness outcomes: Ready, Ready with Controls, Further Assessment Required.
+- Added practical next-step guidance.
+- Published as a static Hugging Face Space with GitHub as canonical source.

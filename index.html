@@ -88,6 +88,22 @@
     footer { margin-top: 28px; color: var(--muted); font-size: .9rem; }
     footer a { color: var(--accent); }
     .small { font-size: .85rem; color: var(--muted); }
+
+    .dimension-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+      margin: 16px 0 6px;
+    }
+    .dimension-card {
+      background: #0e1729;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .dimension-card h4 { margin: 0 0 4px; font-size: .96rem; }
+    .dimension-score { font-size: 1.35rem; font-weight: 800; }
+    .dimension-note { color: var(--muted); font-size: .82rem; margin-top: 4px; }
   </style>
 </head>
 <body>
@@ -121,6 +137,8 @@
       <h2 class="result-title" id="resultTitle"></h2>
       <div class="score" id="resultScore"></div>
       <p id="resultText"></p>
+      <h3>Readiness by dimension</h3>
+      <div class="dimension-grid" id="dimensionGrid"></div>
       <h3>Recommended next steps</h3>
       <ul class="recommendations" id="recommendations"></ul>
     </section>
@@ -130,6 +148,11 @@
       <p>
         Each question is scored as <strong>Yes = 2</strong>, <strong>Partly = 1</strong>,
         <strong>No = 0</strong>. The result is intentionally simple:
+      </p>
+      <p>
+        Version 1.1 also groups the questions into four dimensions so the overall score is easier to interpret:
+        <strong>Data Foundations</strong>, <strong>Risk & Controls</strong>,
+        <strong>Human Oversight</strong> and <strong>Monitoring & Operations</strong>.
       </p>
       <ul>
         <li><strong>Ready</strong> — foundations are broadly in place; continue with proportionate controls and monitoring.</li>
@@ -167,6 +190,29 @@
       ["shadow", "Shadow AI controls", "Are users given clear guidance on approved tools, prohibited data and escalation paths?"]
     ];
 
+    const dimensions = [
+      {
+        name: "Data Foundations",
+        ids: ["dataOwner", "classification", "quality"],
+        note: "Ownership, classification and data quality"
+      },
+      {
+        name: "Risk & Controls",
+        ids: ["access", "risk", "shadow"],
+        note: "Access, risk assessment and approved-use controls"
+      },
+      {
+        name: "Human Oversight",
+        ids: ["purpose", "human", "testing"],
+        note: "Purpose, review and assurance of outputs"
+      },
+      {
+        name: "Monitoring & Operations",
+        ids: ["lineage", "platform", "monitoring"],
+        note: "Traceability, platform governance and ongoing monitoring"
+      }
+    ];
+
     const container = document.getElementById("questions");
 
     questions.forEach(([id, title, text], index) => {
@@ -189,14 +235,24 @@
       let score = 0;
       const gaps = [];
 
+      const answers = {};
+
       questions.forEach(([id, title]) => {
         const value = Number(data.get(id));
+        answers[id] = value;
         score += value;
         if (value < 2) gaps.push(title);
       });
 
       const max = questions.length * 2;
       const pct = Math.round((score / max) * 100);
+
+      const dimensionResults = dimensions.map(dimension => {
+        const dimensionScore = dimension.ids.reduce((sum, id) => sum + answers[id], 0);
+        const dimensionMax = dimension.ids.length * 2;
+        const dimensionPct = Math.round((dimensionScore / dimensionMax) * 100);
+        return { ...dimension, score: dimensionScore, max: dimensionMax, pct: dimensionPct };
+      });
 
       let title, cls, text;
       if (pct >= 80) {
@@ -219,11 +275,42 @@
       document.getElementById("resultScore").textContent = `Readiness score: ${score}/${max} (${pct}%)`;
       document.getElementById("resultText").textContent = text;
 
+      const dimensionGrid = document.getElementById("dimensionGrid");
+      dimensionGrid.innerHTML = "";
+      dimensionResults.forEach(dimension => {
+        const card = document.createElement("div");
+        card.className = "dimension-card";
+
+        let dimensionClass = "status-further";
+        if (dimension.pct >= 80) dimensionClass = "status-ready";
+        else if (dimension.pct >= 55) dimensionClass = "status-controls";
+
+        card.innerHTML = `
+          <h4>${dimension.name}</h4>
+          <div class="dimension-score ${dimensionClass}">${dimension.pct}%</div>
+          <div class="dimension-note">${dimension.note}</div>`;
+        dimensionGrid.appendChild(card);
+      });
+
       const recs = document.getElementById("recommendations");
       recs.innerHTML = "";
-      const items = gaps.length
-        ? gaps.slice(0, 6).map(g => `Strengthen or clarify: ${g}.`)
-        : ["Maintain current controls and periodically reassess as the use case, platform, data or risk changes."];
+      const lowestDimensions = [...dimensionResults]
+        .sort((a, b) => a.pct - b.pct)
+        .filter(d => d.pct < 80)
+        .slice(0, 2);
+
+      const items = [];
+      lowestDimensions.forEach(d => {
+        items.push(`Prioritise ${d.name}: current dimension score ${d.pct}%.`);
+      });
+
+      if (gaps.length) {
+        gaps.slice(0, Math.max(2, 6 - items.length)).forEach(g => {
+          items.push(`Strengthen or clarify: ${g}.`);
+        });
+      } else {
+        items.push("Maintain current controls and periodically reassess as the use case, platform, data or risk changes.");
+      }
 
       items.push("Apply stronger assessment and oversight as business impact increases.");
       items.forEach(item => {

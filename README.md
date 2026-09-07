@@ -17,26 +17,24 @@ A lightweight interactive self-assessment for organisations considering operatio
 
 **Data Governance → Trusted Data → AI Readiness → Responsible AI → Measurement → Scale**
 
+## Version 1.1
+
+Version 1.1 adds readiness scoring across four dimensions:
+
+- **Data Foundations**
+- **Risk & Controls**
+- **Human Oversight**
+- **Monitoring & Operations**
+
+The overall readiness outcome remains deliberately simple, while the dimension view makes it easier to see where governance or operational gaps are concentrated.
+
 ## What it assesses
 
-The tool covers:
-
-- data ownership;
-- classification;
-- data quality;
-- access;
-- lineage;
-- business purpose;
-- risk assessment;
-- approved platforms;
-- human oversight;
-- testing and evaluation;
-- monitoring;
-- Shadow AI controls.
+The tool covers data ownership, classification, quality, access, lineage, business purpose, risk assessment, approved platforms, human oversight, testing and evaluation, monitoring and Shadow AI controls.
 
 ## Outcomes
 
-The assessment produces one of three simple outcomes:
+The assessment produces one of three overall outcomes:
 
 - **Ready**
 - **Ready with Controls**
@@ -52,10 +50,8 @@ https://huggingface.co/spaces/rakeshranderia/responsible-ai-readiness
 
 - Data Governance + Responsible AI Framework  
   https://github.com/rakeshranderia/data-governance-framework
-
 - Governed AI Adoption Framework  
   https://github.com/rakeshranderia/governed-ai-adoption
-
 - AI Governance Framework  
   https://github.com/rakeshranderia/ai-governance-framework
 
