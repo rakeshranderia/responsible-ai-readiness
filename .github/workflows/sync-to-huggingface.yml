@@ -14,11 +14,18 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v6
 
+      - name: Install Hugging Face CLI
+        run: pip install --upgrade huggingface_hub
+
       - name: Sync to Hugging Face Space
-        uses: huggingface/hub-sync@v0.1.0
-        with:
-          github_repo_id: ${{ github.repository }}
-          huggingface_repo_id: rakeshranderia/responsible-ai-readiness
-          repo_type: space
-          space_sdk: static
-          hf_token: ${{ secrets.HF_TOKEN }} 
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          hf upload \
+            rakeshranderia/responsible-ai-readiness \
+            . \
+            --repo-type space \
+            --exclude=".git*" \
+            --exclude=".github*" \
+            --delete="*" \
+            --commit-message="Sync from GitHub"
