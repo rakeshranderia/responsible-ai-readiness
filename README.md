@@ -9,6 +9,9 @@ license: mit
 short_description: Interactive Responsible AI readiness assessment
 ---
 
+> **Status:** Maintained tool  
+> **Last reviewed:** October 2026
+
 # Responsible AI Readiness
 
 A lightweight interactive self-assessment for organisations considering operational AI use.
